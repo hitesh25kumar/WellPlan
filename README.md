@@ -1,2 +1,0 @@
-# WellPlan
-Daily schedule app
