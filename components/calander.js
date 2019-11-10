@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text,StyleSheet,Dimensions,ScrollView,FlatList,TouchableOpacity,StatusBar } from 'react-native';
-import {Calendar, LocaleConfig,CalendarList, Agenda} from 'react-native-calendars';
+import { View, Text,StyleSheet,Dimensions,Image,StatusBar } from 'react-native';
+import {CalendarList} from 'react-native-calendars';
 import {  Icon } from '@ant-design/react-native';
 
 
@@ -22,59 +22,28 @@ export default class calander extends Component {
     };
   }
 
+
+  dayPress = (day) => {
+    this.props.navigation.navigate('TaskDetails')
+ console.log('selected day', day)
+  }
   
 
   render() {
-
-    LocaleConfig.locales.en = LocaleConfig.locales[''];
-LocaleConfig.locales.fr = {
-  monthNames: [
-    'Janvier',
-    'Février',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juillet',
-    'Août',
-    'Septembre',
-    'Octobre',
-    'Novembre',
-    'Décembre',
-  ],
-  monthNamesShort: [
-    'Janv.',
-    'Févr.',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juil.',
-    'Août',
-    'Sept.',
-    'Oct.',
-    'Nov.',
-    'Déc.',
-  ],
-  dayNames: [
-    'Dimanche',
-    'Lundi',
-    'Mardi',
-    'Mercredi',
-    'Jeudi',
-    'Vendredi',
-    'Samedi',
-  ],
-  dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-};
-
-LocaleConfig.defaultLocale = 'en'
+    
+const date = new Date();
+const day = date.getDate();
+let m = date.getMonth() + 1;
+const y = date.getFullYear();
+let d = day;
+let minDate = y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+console.log('minDate: ', minDate);
 
     return (
-        <ScrollView contentContainerStyle={styles.mainContainer}>
+        <View style={styles.mainContainer}>
         <StatusBar backgroundColor="#194DCB" barStyle='light-content' />
           <View style={styles.topcalWrapper}>
-          <Icon name="arrow-left" color="#194DCB" style={styles.back} onPress={() => this.props.navigation.goBack()}/>
+          <Icon name="arrow-left" color="#fff" style={styles.back} onPress={() => this.props.navigation.goBack()}/>
 <Text style={styles.calTitle}>Select a day to see its schedule</Text>
           </View>
             <View style={styles.calInnerContainer}>
@@ -87,13 +56,13 @@ style={{
     // height: 350,
   }}
         // Initially visible month. Default = Date()
-        current={'2019-10-16'}
+        // current={'2019-10-16'}
         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        minDate={'2012-05-10'}
+        minDate={minDate}
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        maxDate={'2020-05-30'}
+        // maxDate={'2020-05-30'}
         // Handler which gets executed on day press. Default = undefined
-        onDayPress={(day) => {console.log('selected day', day)}}
+        onDayPress={() => this.dayPress()}
         // Handler which gets executed on day long press. Default = undefined
         onDayLongPress={(day) => {console.log('selected day', day)}}
         // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
@@ -103,7 +72,7 @@ style={{
         // Hide month navigation arrows. Default = false
         hideArrows={false}
         // Replace default arrows with custom ones (direction can be 'left' or 'right')
-        renderArrow={(direction) => (direction === 'left' ? <Icon name="left" size="md" color="red" /> : <Icon name="right" size="md" color="red" />)}
+        renderArrow={(direction) => (direction === 'left' ? <Icon name="left" size="md" color="#fff" /> : <Icon name="right" size="md" color="#fff" />)}
         // Do not show days of other months in month page. Default = false
         hideExtraDays={true}
         // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
@@ -128,19 +97,19 @@ style={{
           }}
 
           theme={{
-            backgroundColor: '#ffffff',
-            calendarBackground: '#ffffff',
-            textSectionTitleColor: '#b6c1cd',
+            backgroundColor: '#194DCB',
+            calendarBackground: '#194DCB',
+            textSectionTitleColor: '#fff',
             selectedDayBackgroundColor: '#194DCB',
             selectedDayTextColor: '#ffffff',
-            todayTextColor: '#00adf5',
-            dayTextColor: '#2d4150',
-            textDisabledColor: '#d9e1e8',
+            todayTextColor: '#fff',
+            dayTextColor: '#fff',
+            textDisabledColor: 'grey',
             dotColor: '#00adf5',
             selectedDotColor: '#ffffff',
-            arrowColor: 'orange',
-            monthTextColor: 'blue',
-            indicatorColor: 'blue',
+            arrowColor: '#fff',
+            monthTextColor: '#fff',
+            indicatorColor: '#fff',
             textDayFontFamily: 'monospace',
             textMonthFontFamily: 'monospace',
             textDayHeaderFontFamily: 'monospace',
@@ -212,7 +181,7 @@ style={{
  
 /> */}
 </View>
-<FlatList showsVerticalScrollIndicator={true} contentContainerStyle={{height}}
+{/* <FlatList showsVerticalScrollIndicator={true} contentContainerStyle={{height}}
         data={this.state.taskList}
         renderItem={({ item ,index}) => <TouchableOpacity style={index % 2 === 0 ? styles.rightSidetask : styles.leftSidetask} onPress={() => this.props.navigation.navigate('TaskDetails',{index:index,item:item})}>
         <View style={styles.taskInnerDetails}>
@@ -223,9 +192,13 @@ style={{
         </View>
         </TouchableOpacity>}
         // keyExtractor={item => item.id}
-      />
+      /> */}
+       <Image
+          style={styles.timeImg2} resizeMode='contain'
+          source={require('../assets/calander.png')}
+        />
      
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -237,7 +210,7 @@ const styles = StyleSheet.create({
         // justifyContent:'center',
         alignItems:'center',
         paddingTop:'5%',
-        // height,
+        height,
         width
     },
     calInnerContainer:{
@@ -254,6 +227,7 @@ const styles = StyleSheet.create({
         width:'100%',
         // padding: '0.5%',
         paddingLeft: 0,
+        // height:height/2.2
     },
     leftStrip:{
 position:'absolute',
@@ -334,6 +308,11 @@ calTitle:{
     padding:'1%',
     marginRight:'3%',
     borderRadius:20,
-    backgroundColor:'#fff'
+    backgroundColor:'transparent'
+  },
+  timeImg2:{
+    width:300,
+    height:190,
+    marginTop:20
   }
 });

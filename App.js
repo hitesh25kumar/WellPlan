@@ -10,11 +10,11 @@ import calander from './components/calander';
 import TaskDetails from './components/TaskDetails';
 import Add from './components/Add';
 
-import Example from './components/Swiptest';
-import ProductScreen from './components/ProductScreen';
-import ProductDetailsScreen from './components/ProductDetailsScreen';
-import ProductAddScreen from './components/ProductAddScreen';
-import ProductEditScreen from './components/ProductEditScreen';
+// import Example from './components/Swiptest';
+// import ProductScreen from './components/ProductScreen';
+// import ProductDetailsScreen from './components/ProductDetailsScreen';
+// import ProductAddScreen from './components/ProductAddScreen';
+// import ProductEditScreen from './components/ProductEditScreen';
 
 const AppNavigator = createStackNavigator(
   {
@@ -24,11 +24,11 @@ const AppNavigator = createStackNavigator(
     calander,
     TaskDetails,
     Add,
-    Example,
-    Product: ProductScreen,
-    ProductDetails: ProductDetailsScreen,
-    AddProduct: ProductAddScreen,
-    EditProduct: ProductEditScreen,
+    // Example,
+    // Product: ProductScreen,
+    // ProductDetails: ProductDetailsScreen,
+    // AddProduct: ProductAddScreen,
+    // EditProduct: ProductEditScreen,
   },
   {
     

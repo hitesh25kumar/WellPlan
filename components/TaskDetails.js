@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text,StyleSheet,StatusBar,TouchableOpacity ,FlatList,Dimensions} from 'react-native';
+import { View, Text,StyleSheet,StatusBar,TouchableOpacity ,FlatList,Dimensions,ScrollView} from 'react-native';
 import { Icon, SearchBar, TabBar } from '@ant-design/react-native';
+import Database from '../Database';
 
+const db = new Database();
 const {height,width} = Dimensions.get('window');
-
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 export default class TaskDetails extends Component {
   constructor(props) {
     super(props);
@@ -11,12 +15,35 @@ export default class TaskDetails extends Component {
       taskList:[
         {time:'10:30',address:'Bomanhalli',taskName:'Deepawali celebration'},
         {time:'1:30',address:'Ooty',taskName:'Ooty trip'},
- ]
+ ],
+ taskList: []
     };
   }
 
+  componentDidMount(){
+    this.tasks();
+  }
+
+  tasks() {
+    let taskList = [];
+    console.log('taskList: ', taskList);
+    db.listProduct().then((data) => {
+      taskList = data;
+      this.setState({
+        taskList,
+        isLoading: false,
+      });
+    }).catch((err) => {
+      console.log(err);
+      this.setState = {
+        isLoading: false
+      }
+    })
+  }
+
   render() {
-      console.log(this.props);
+    const { taskList } = this.state;
+      console.log(this.props,this.state,'task details');
     return (
       <View style={styles.mainContainer}>
            <StatusBar backgroundColor="#194DCB" barStyle='dark-content' />
@@ -28,31 +55,31 @@ export default class TaskDetails extends Component {
 <View style={styles.detailsTop}>
 <View style={styles.topLeft}>
 <Text style={styles.detailsmonth}>
-    February
+{monthNames[new Date().getMonth()]}
 </Text>
 <Text style={styles.detailsdate}>
-    22
+    {new Date().getDate()}
 </Text>
 </View>
 <View style={styles.topRight}>
-<Text style={styles.topRighttxt}>Today you have <Text style={{fontWeight:'bold',color:'#000'}}>2</Text> arrangements</Text>
+<Text style={styles.topRighttxt}>Today you have <Text style={{fontWeight:'bold',color:'#000'}}>{taskList.length}</Text> arrangements</Text>
 </View>
 </View>
 <View style={styles.detailsBottom}>
+<ScrollView horizontal contentContainerStyle={{width:'100%',height:'100%'}}>
 
-<FlatList horizontal={true}  showsVerticalScrollIndicator={false} showsVerticalScrollIndicator={false}  contentContainerStyle={{width:width,display:'flex', flexDirection:'row',justifyContent:'center', alignItems:'center'}}
+{/* <FlatList horizontal={true}  showsVerticalScrollIndicator={false} showsVerticalScrollIndicator={false}  contentContainerStyle={{width:'100%',flex:1,paddingLeft:'5%',}}
         data={this.state.taskList}
-        renderItem={({ item ,index}) => 
-        <View style={[styles.detailscard,{marginTop:index%2 === 0 ? 0 : 80}]}>
-        <Text style={styles.time}>{item.time}</Text>
-        <Text style={styles.taskName}>{item.address}</Text>
-        <Text style={styles.location}>{item.address}</Text>
+        renderItem={({ item ,index}) =>  */}
+        {this.state.taskList && (this.state.taskList || []).map((item,index) => (
+       <View style={[styles.detailscard,{marginTop:index%2 === 0 ? 0 : 80,flex:1}]}>
+        <Text style={styles.time}>{item.taskTime}</Text>
+        <Text style={styles.taskName}>{item.taskName}</Text>
         </View>  
-      }
-        // keyExtractor={item => item.id}
-      />
+        ))}
+  
 
-
+</ScrollView>
 
 </View>
           </View>
@@ -70,6 +97,7 @@ export default class TaskDetails extends Component {
 const styles = StyleSheet.create({
     mainContainer:{
         width:'100%',
+        flex:1,
         height:'100%',
         backgroundColor:'#194DCB'
     },
@@ -122,15 +150,16 @@ const styles = StyleSheet.create({
         paddingRight: '15%',
     },
     detailsmonth:{
-      fontSize:22,
+      fontSize:18,
       fontWeight:'900'
     },
     detailsdate:{
       color:'#FF7F38',
       fontWeight:'bold',
-      fontSize:33,
+      fontSize:35,
       letterSpacing:1,
-      paddingLeft:'10%'
+      paddingLeft:'10%',
+      marginBottom: '5%',
     },
     detailsTop:{
 width:'100%',
@@ -155,13 +184,11 @@ marginTop:'15%'
       color:'rgba(0,0,0,0.5)'
     },
     detailsBottom:{
-width,
-display:'flex',
-alignItems:'center',
-justifyContent:'center',
+width:'100%',
+
     },
     detailscard:{
-      // width:'40%',
+      width:150,
       minWidth:150,
       backgroundColor:'#194DCB',
       borderRadius:15,
@@ -183,7 +210,7 @@ justifyContent:'center',
     },
     taskName:{
      color:'#fff',
-     fontSize:18 ,
+     fontSize:22 ,
      marginTop:'16%'
     },
     location:{

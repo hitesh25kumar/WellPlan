@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text,StyleSheet,StatusBar,KeyboardAvoidingView } from 'react-native';
+import { View, Text,StyleSheet,StatusBar,KeyboardAvoidingView,Image } from 'react-native';
 import { Button, InputItem ,Checkbox,} from '@ant-design/react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
+var PushNotification = require("react-native-push-notification");
 import {  Icon } from '@ant-design/react-native';
 import {firebaseApp} from './firebase';
 import Database from '../Database';
@@ -115,18 +117,33 @@ saveProduct() {
   this.setState({
     isLoading: false,
   });
+
+//schedule tasks
+ PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      color: "blue",
+      repeatType:"day",
+    vibration: 800,
+    playSound: true,
+    soundName: 'my_sound.mp3',
+      title: this.state.taskName,
+      message: date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }), // (required)
+      date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), 0, 0)// in 60 secs  09-11-2019 08:00  current-date
+    });
+
   const data = {
-     taskId: new Date().getTime(),
+     taskId: date.getTime(),
     taskName: this.state.taskName,
      taskDate:date.getDate(),
      taskMonth:date.getMonth() + 1,
      taskYear:date.getFullYear(),
      taskTime:date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+     taskHour:date.getHours(),
+     taskMin:date.getMinutes(),
      taskDesc: this.state.taskDesc,
      priority:'normal',
      dailyReminder:dailyReminder,
      taskStatus:'sheduled',
-     createdTime:'new Date()'
   }
 
   console.log('data: ', data);
@@ -150,16 +167,22 @@ saveProduct() {
     const lastday = date.getDate();
     let lastmonth = date.getMonth() + 1;
 const lastyear = date.getFullYear();
+const hour = date.getHours();
+const min = date.getMinutes();
 const time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
     console.log('lastday: ', lastday,lastmonth,lastyear,time);
     let mydate = JSON.stringify(this.state.date)
-    console.log('mydate: ', mydate);
+    console.log('mydate: ', mydate,hour,min);
 mydate = mydate.slice(1,11)
 console.log('mydate: ', mydate);
     return (
       <KeyboardAvoidingView style={styles.maimWrapper}  behavior="height">
           <StatusBar backgroundColor="#194DCB" barStyle='light-content' />
        <View style={styles.topWrapper}>
+       <Image
+          style={styles.timeImg} resizeMode='contain'
+          source={require('../assets/clock.png')}
+        />
 <Text style={styles.taskTopHeader}>Add a task</Text>
 <Text style={styles.taskTopdesc}>You will be updated with your tasks that you have to do</Text>
        </View>
@@ -248,7 +271,7 @@ justifyContent:'flex-end'
       alignItems: 'flex-start',
       width:'100%',
       paddingLeft:'5%',
-      paddingBottom:'3%'
+      paddingBottom:'3%',
 
   },
   bottomWrapper:{
@@ -377,5 +400,10 @@ paddingTop: '5%',
   taskTopdesc:{
     color:'#fff',
     fontSize:16
+  },
+  timeImg:{
+    width:200,
+    height:140,
+    marginTop:100
   }
 });

@@ -32,7 +32,7 @@ export default class Database {
                   console.log("Received error: ", error);
                   console.log("Database not yet ready ... populating data");
                   db.transaction((tx) => {
-                      tx.executeSql('CREATE TABLE IF NOT EXISTS Product (taskId, taskName, taskDate, taskMonth, taskYear, taskTime, taskDesc, priority, dailyReminder, taskStatus, createdTime)');
+                      tx.executeSql('CREATE TABLE IF NOT EXISTS Product (taskId, taskName, taskDate, taskMonth, taskYear, taskTime,taskHour,taskMin, taskDesc, priority, dailyReminder, taskStatus, createdTime)');
                   }).then(() => {
                       console.log("Table created successfully");
                   }).catch(error => {
@@ -72,15 +72,15 @@ export default class Database {
       const tasks = [];
       this.initDB().then((db) => {
         db.transaction((tx) => {
-          tx.executeSql('SELECT * FROM Product p', []).then(([tx,results]) => {
+          tx.executeSql('SELECT * FROM Product p ORDER BY taskStatus DESC , taskId ', []).then(([tx,results]) => {
             console.log("Query completed");
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
               console.log(`Task ID: ${row.taskId}, Prod Name: ${row.taskName}`)
-              const { taskId,priority, taskName, taskDate, taskMonth, taskYear, taskTime, taskDesc,dailyReminder,taskStatus,createdTime } = row;
+              const { taskId,priority, taskName, taskDate, taskMonth, taskYear, taskTime, taskHour, taskMin, taskDesc,dailyReminder,taskStatus,createdTime } = row;
               tasks.push({
-                taskId, taskName, taskDate, taskMonth, taskYear, taskTime, taskDesc, priority, dailyReminder, taskStatus, createdTime
+                taskId, taskName, taskDate, taskMonth, taskYear, taskTime, taskHour, taskMin, taskDesc, priority, dailyReminder, taskStatus, createdTime
               });
             }
             console.log('tasks:. ', tasks);
@@ -125,7 +125,7 @@ export default class Database {
     return new Promise((resolve) => {
       this.initDB().then((db) => {
         db.transaction((tx) => {
-          tx.executeSql('INSERT INTO Product VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [prod.taskId, prod.taskName, prod.taskDate, prod.taskMonth, prod.taskYear, prod.taskTime, prod.taskDesc, prod.priority, prod.dailyReminder, prod.taskStatus, prod.createdTime]).then(([tx, results]) => {
+          tx.executeSql('INSERT INTO Product VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)', [prod.taskId, prod.taskName, prod.taskDate, prod.taskMonth, prod.taskYear, prod.taskTime, prod.taskHour, prod.taskMin, prod.taskDesc, prod.priority, prod.dailyReminder, prod.taskStatus, prod.createdTime]).then(([tx, results]) => {
             resolve(results);
             console.log('results: ', results);
           });
@@ -148,7 +148,7 @@ export default class Database {
     return new Promise((resolve) => {
       this.initDB().then((db) => {
         db.transaction((tx) => {
-          tx.executeSql('UPDATE Product SET taskName  = ?, taskDate  = ?, taskMonth  = ?, taskYear  = ?, taskTime  = ?, taskDesc  = ?, priority  = ?, dailyReminder = ?, taskStatus = ?, createdTime = ? WHERE taskId = ?', [prod.taskName, prod.taskDate, prod.taskMonth, prod.taskYear, prod.taskTime, prod.taskDesc, prod.priority, prod.dailyReminder, prod.taskStatus, prod.createdTime,taskId]).then(([tx, results]) => {
+          tx.executeSql('UPDATE Product SET taskName  = ?, taskDate  = ?, taskMonth  = ?, taskYear  = ?, taskTime  = ?, taskHour = ?,taskMin = ?, taskDesc  = ?, priority  = ?, dailyReminder = ?, taskStatus = ?, createdTime = ? WHERE taskId = ?', [prod.taskName, prod.taskDate, prod.taskMonth, prod.taskYear, prod.taskTime, prod.taskHour ,prod.taskMin, prod.taskDesc, prod.priority, prod.dailyReminder, prod.taskStatus, prod.createdTime,taskId]).then(([tx, results]) => {
             resolve(results);
           });
         }).then((result) => {

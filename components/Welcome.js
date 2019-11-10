@@ -17,15 +17,33 @@ export default class Welcome extends Component {
       <View>
            <StatusBar backgroundColor="rgba(255, 255, 255, 1)" barStyle='dark-content' />
      <View style={styles.mainContainer}>
+         {new Date().getHours() > 5  && new Date().getHours() < 12 ?
      <Image
           style={styles.timeImg} resizeMode='cover'
           source={require('../assets/morning.jpg')}
         />
+        : new Date().getHours < 16 ?
+        <Image
+        style={styles.timeImg} resizeMode='cover'
+        source={require('../assets/afternoon.jpg')}
+      />
+      :
+      <Image
+      style={styles.timeImg} resizeMode='cover'
+      source={require('../assets/evening.jpg')}
+    />
+         }
+
      <View style={styles.bubble}/>
      <View style={styles.bubble2}/>
      <View style={styles.topContainer}>
-         <Text style={styles.textName}>Morning</Text> 
-         <Text style={styles.textName}>Rider!</Text> 
+         <Text style={styles.textName}>Good</Text> 
+         {new Date().getHours() > 5  && new Date().getHours() < 12 ?
+  <Text style={styles.textName}>Morning</Text>
+  : new Date().getHours < 16 ?
+  <Text style={styles.textName}>Afternoon</Text>:
+  <Text style={styles.textName}>Evening</Text>
+         }
      </View>
      <View>
          <Text style={styles.textName2}>
@@ -106,7 +124,7 @@ const styles = StyleSheet.create({
         width:'80%',
         marginLeft:'10%',
         borderRadius:10,
-        backgroundColor:'#0080FB',
+        backgroundColor:'#194DCB',
     },
     timeImg:{
 position:'absolute',

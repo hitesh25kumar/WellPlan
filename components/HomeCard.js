@@ -5,9 +5,9 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {  Icon } from '@ant-design/react-native';
 import Updatetaskdetails from './updatetaskdetails';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
 import {firebaseApp} from './firebase';
 import Database from '../Database';
-import { throwStatement } from '@babel/types';
 
 const db = new Database();
 
@@ -33,7 +33,7 @@ export default class HomeCard extends Component {
 
   componentDidMount(){
     const { tasks } = this.props;
-    this.setState({taskStatus:tasks.taskStatus})
+    // this.setState({taskStatus:tasks.taskStatus})
   }
 
   updatetaskDetails = (tasks) => {
@@ -54,14 +54,14 @@ export default class HomeCard extends Component {
     console.log('You swiped left!');
     const that = this;
     this.setState({taskStatus:'scheduled'},function(){
-     that.updateProduct(); 
+    //  that.updateProduct(); 
     })
   }
  
   onSwipeRight(gestureState) {
     const that = this;
     this.setState({taskStatus:'completed'},function(){
-     that.updateProduct(); 
+    //  that.updateProduct(); 
     })
     console.log('You swiped right!');
     // this.markTaskComplete()
@@ -107,18 +107,31 @@ export default class HomeCard extends Component {
   }
  
 
+// var str = "12:34 AM";
+// var res = str.substring(0, 2);
+// var res = str.substring(3, 6);
+// var res = str.substring(5, 8);
+// var d = new Date();
+// var n = d.getMinutes();
+// var n = d.Hours();
+// var ampm = hours >= 12 ? 'pm' : 'am';
+
   render() {
-    console.log('th',this.props,this.state);
+   
     const { tasks } = this.props;
     const { updateTask,currentTask,taskStatus} = this.state;
     const color1 = [colorsarr[Math.floor(Math.random() * colorsarr.length)]];
     const color2 = [colorsarr[Math.floor(Math.random() * colorsarr.length)]];
     const color3 = [colorsarr[Math.floor(Math.random() * colorsarr.length)]];
+    const date = new Date();
+    const min = date.getMinutes();
+const hour = date.getHours();
+console.log('th',this.props,this.state);
     return (
       
-      <View style={styles.cardMian}>
+      <View>
 
-{tasks && 
+{tasks && hour < tasks.taskHour ?
   <GestureRecognizer
   // onSwipe={this.onSwipe}
   onSwipeUp={this.onSwipeUp}
@@ -127,10 +140,10 @@ export default class HomeCard extends Component {
   onSwipeRight={this.onSwipeRight}
   >
 
-     <LinearGradient colors={[color1, color2,color3]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.cardInner}>
+     <LinearGradient colors={[color1, color2,color3]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[styles.cardInner,styles.cardMian]}>
 <View style={[styles.current,{backgroundColor:taskStatus !== 'completed' ? 'red' :'green'}]}>
 {taskStatus !== 'completed' ?
-<Icon name="close" color="#fff"/>:
+<Icon name="clock-circle" size="lg" color="#fff"/>:
 <Icon name="check" color="#fff"/>
 }
 </View>
@@ -139,6 +152,49 @@ export default class HomeCard extends Component {
             <Text style={styles.desc}>{tasks.taskDesc}</Text>
             </LinearGradient>
             </GestureRecognizer>
+: tasks && hour === tasks.taskHour && min <= tasks.taskMin ?
+<GestureRecognizer
+  // onSwipe={this.onSwipe}
+  onSwipeUp={this.onSwipeUp}
+  onSwipeDown={this.onSwipeDown}
+  onSwipeLeft={this.onSwipeLeft}
+  onSwipeRight={this.onSwipeRight}
+  >
+
+     <LinearGradient colors={[color1, color2,color3]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[styles.cardInner,styles.cardMian]}>
+<View style={[styles.current,{backgroundColor:taskStatus !== 'completed' ? 'red' :'green'}]}>
+{taskStatus !== 'completed' ?
+<Icon name="clock-circle" size="lg" color="#fff"/>:
+<Icon name="check" color="#fff"/>
+}
+</View>
+            <Text style={styles.TopTitle}>{tasks.taskTime}</Text>
+            <Text style={styles.TopsubTitle}>{tasks.taskName}</Text>
+            <Text style={styles.desc}>{tasks.taskDesc}</Text>
+            </LinearGradient>
+            </GestureRecognizer>
+            :
+            <GestureRecognizer
+            // onSwipe={this.onSwipe}
+            onSwipeUp={this.onSwipeUp}
+            onSwipeDown={this.onSwipeDown}
+            onSwipeLeft={this.onSwipeLeft}
+            onSwipeRight={this.onSwipeRight}
+            >
+          {tasks && tasks.taskTime &&
+               <LinearGradient colors={[color1, color2,color3]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[styles.cardInner,styles.cardMian]}>
+          <View style={[styles.current,{backgroundColor:'green'}]}>
+          
+          <Icon name="check" color="#fff"/>
+          
+          </View>
+                      <Text style={styles.TopTitle}>{tasks.taskTime}</Text>
+                      <Text style={styles.TopsubTitle}>{tasks.taskName}</Text>
+                      <Text style={styles.desc}>{tasks.taskDesc}</Text>
+                      </LinearGradient>
+  }
+                      </GestureRecognizer>
+
 }
 {updateTask === true &&
 <Updatetaskdetails taskDetails={currentTask} color1={color1} color2={color2} color3={color3}/>

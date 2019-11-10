@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text,StatusBar,ScrollView,Dimensions,StyleSheet,TouchableOpacity,FlatList,RefreshControl,ActivityIndicator } from 'react-native';
-import {  Icon } from '@ant-design/react-native';
+import { View, Text,StatusBar,ScrollView,Dimensions,StyleSheet,TouchableOpacity,FlatList,RefreshControl,Image } from 'react-native';
+import {  Icon,Button } from '@ant-design/react-native';
 import HomeCard  from './HomeCard';
 import Database from '../Database';
 
@@ -16,112 +16,7 @@ export default class Home extends Component {
         isLoading: true,
         products: [],
         notFound: 'Products not found.\nPlease click (+) button to add it.',
-        tasks:[
-           { taskDetails: {
-                taskName: 'task1',
-                taskDesc: '',
-                taskDate:2,
-                taskMonth:11,
-                taskYear:2019,
-                taskTime:'2:06PM',
-                dailyReminder:true,
-                
-            },
-            taskStatus:'scheduled',
-            createdDate:new Date()
-        },
-        { taskDetails: {
-            taskName: 'task2',
-            taskDesc: '',
-            taskDate:2,
-            taskMonth:11,
-            taskYear:2019,
-            taskTime:'2:06PM',
-            dailyReminder:true,
-            
-        },
-        taskStatus:'scheduled',
-        createdDate:new Date()
-    },     { taskDetails: {
-        taskName: 'task3',
-        taskDesc: '',
-        taskDate:2,
-        taskMonth:11,
-        taskYear:2019,
-        taskTime:'2:06PM',
-        dailyReminder:true,
-        
-    },
-    taskStatus:'scheduled',
-    createdDate:new Date()
-},
-{ taskDetails: {
-    taskName: 'task1',
-    taskDesc: '',
-    taskDate:2,
-    taskMonth:11,
-    taskYear:2019,
-    taskTime:'2:06PM',
-    dailyReminder:true,
-    
-},
-taskStatus:'scheduled',
-createdDate:new Date()
-},
-{ taskDetails: {
-    taskName: 'task1',
-    taskDesc: '',
-    taskDate:2,
-    taskMonth:11,
-    taskYear:2019,
-    taskTime:'2:06PM',
-    dailyReminder:true,
-    
-},
-taskStatus:'scheduled',
-createdDate:new Date()
-},
-{ taskDetails: {
-    taskName: 'task1',
-    taskDesc: '',
-    taskDate:2,
-    taskMonth:11,
-    taskYear:2019,
-    taskTime:'2:06PM',
-    dailyReminder:true,
-    
-},
-taskStatus:'scheduled',
-createdDate:new Date()
-},
-{ taskDetails: {
-    taskName: 'task1',
-    taskDesc: '',
-    taskDate:2,
-    taskMonth:11,
-    taskYear:2019,
-    taskTime:'2:06PM',
-    dailyReminder:true,
-    
-},
-taskStatus:'scheduled',
-createdDate:new Date()
-},
-{ taskDetails: {
-    taskName: 'task1',
-    taskDesc: '',
-    taskDate:2,
-    taskMonth:11,
-    taskYear:2019,
-    taskTime:'2:06PM',
-    dailyReminder:true,
-    
-},
-taskStatus:'scheduled',
-createdDate:new Date()
-},
-
-        ],
+        tasks:[],
         colors:[{color1:'red',color2:'blue'},{color1:'yellow',color2:'grey'},{color1:'red',color2:'pink'},{color1:'red',color2:'orange'},{color1:'black',color2:'blue'}]
     };
   }
@@ -139,7 +34,7 @@ getProducts() {
     db.listProduct().then((data) => {
       products = data;
       this.setState({
-        products,
+        tasks:products,
         isLoading: false,
       });
     }).catch((err) => {
@@ -159,7 +54,15 @@ keyExtractor = (item, index) => index.toString()
 
   render() {
       console.log('this.state',this.state)
-      const { refreshing } = this.state;
+      const { refreshing, tasks } = this.state;
+// var res = str.substring(0, 2);
+// var res = str.substring(3, 6);
+// var res = str.substring(5, 8);
+      const date = new Date();
+const day = date.getDate();
+let m = date.getMonth() + 1;
+const y = date.getFullYear();
+
     return (
       <View style={styles.MainContainer}>
           <View style={styles.background}/>
@@ -169,27 +72,48 @@ keyExtractor = (item, index) => index.toString()
     
     <Icon name="calendar" size="md" color="#194DCB" style={{marginTop: 10}} onPress={() => this.props.navigation.navigate('calander')}/>
 </View>
-<ScrollView contentContainerStyle={styles.mainContainerInner} showsVerticalScrollIndicator={false}  refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
-        }
+<View style={styles.mainContainerInner} 
       >
-    <Text style={styles.TopsubTitle}>You have 4 meetings today</Text>
+    <Text style={styles.TopsubTitle}>Here is your today's routine</Text>
+    {tasks[0] !== undefined ?
     <View style={{display:'flex',height:'100%',width:'100%',}}>
     <FlatList
-        data={this.state.products}
-        renderItem={({ item,index }) =>  <HomeCard key={Math.random()} tasks={item} taskNo={index}/>}
+    showsVerticalScrollIndicator={false}  
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />}
+        data={this.state.tasks}
+        renderItem={({ item,index }) => 
+        <View>
+          {/* {item.taskDate === day && item.taskMonth === m && item.taskYear === y && */}
+         <HomeCard key={Math.random()} tasks={item} taskNo={index}/>
+      {/* } */}
+         </View>
+        }
         keyExtractor={item => Math.random()}
       />
 
    </View>
-</ScrollView>
+   :
+   <View style={styles.noDataContainer}>
+<Text style={styles.noTaskTxt}>Looks like you have added any tasks yet.</Text>
+<Image
+          style={styles.timeImg2} resizeMode='contain'
+          source={require('../assets/no-tasks.png')}
+        />
+         <Button type="primary" style={styles.btn} onPress={() => this.props.navigation.navigate('Add')}>Add new task</Button>
+    
+   </View>
+  }
+</View>
 <View>
 </View>
+{tasks[0] !== undefined &&
 <View style={styles.bottomContainer}>
 <TouchableOpacity style={styles.fabbtn} onPress={() => this.props.navigation.navigate('Add')}>
 <Icon name="plus" color="#fff" size='lg' />
 </TouchableOpacity>
           </View>
+  }
       </View>
     );
   }
@@ -255,7 +179,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'#194DCB',
         // borderTopLeftRadius:100 ,
         position:'absolute',
-        bottom:20,
+        bottom:0,
         // display:'flex',
         // alignItems:'flex-end',
         // justifyContent:'center',
@@ -265,10 +189,33 @@ const styles = StyleSheet.create({
         width:55,
         height:55,
         borderRadius:30,
+        zIndex:99999,
         backgroundColor:'#194DCB',
-        elevation:25,
+        elevation:5,
         display:'flex',
         alignItems:'center',
         justifyContent:'center'
     },
+    noTaskTxt:{
+      fontSize:22,
+      width:'100%',
+      textAlign:'left'
+    },
+    noDataContainer:{width:'100%',height:'100%',
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    padding: '10%',
+    },
+    timeImg2:{
+      width:width/1.1,
+      height:height/2,
+      marginTop:20
+    },
+    btn:{
+      width:'80%',
+      marginLeft:'10%',
+      borderRadius:10,
+      backgroundColor:'#194DCB',
+  },
 });
