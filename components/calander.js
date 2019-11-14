@@ -24,8 +24,9 @@ export default class calander extends Component {
 
 
   dayPress = (day) => {
-    this.props.navigation.navigate('TaskDetails')
- console.log('selected day', day)
+   
+//  console.log('selected day', day)
+ this.props.navigation.navigate('TaskDetails')
   }
   
 
@@ -62,9 +63,9 @@ style={{
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
         // maxDate={'2020-05-30'}
         // Handler which gets executed on day press. Default = undefined
-        onDayPress={() => this.dayPress()}
+        onDayPress={(day) => this.dayPress(day)}
         // Handler which gets executed on day long press. Default = undefined
-        onDayLongPress={(day) => {console.log('selected day', day)}}
+        onDayLongPress={(day) => this.dayPress(day)}
         // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
         monthFormat={' MM yyyy'}
         // Handler which gets executed when visible month changes in calendar. Default = undefined

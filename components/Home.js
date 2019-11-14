@@ -76,26 +76,28 @@ const y = date.getFullYear();
       >
     <Text style={styles.TopsubTitle}>Here is your today's routine</Text>
     {tasks[0] !== undefined ?
-    <View style={{display:'flex',height:'100%',width:'100%',}}>
-    <FlatList
+    <View style={{display:'flex',flex:1,width:'100%',}}>
+    <ScrollView
     showsVerticalScrollIndicator={false}  
     refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />}
-        data={this.state.tasks}
-        renderItem={({ item,index }) => 
+      <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />}>
+      {this.state.tasks && (this.state.tasks || []).map((item,index) => (
+ <HomeCard key={Math.random()} tasks={item} taskNo={index}/>
+      ))}
+      </ScrollView>
+        
         <View>
           {/* {item.taskDate === day && item.taskMonth === m && item.taskYear === y && */}
-         <HomeCard key={Math.random()} tasks={item} taskNo={index}/>
+        
       {/* } */}
          </View>
-        }
-        keyExtractor={item => Math.random()}
-      />
+       
+       
 
    </View>
    :
    <View style={styles.noDataContainer}>
-<Text style={styles.noTaskTxt}>Looks like you have added any tasks yet.</Text>
+<Text style={styles.noTaskTxt}>Looks like you haven't added any tasks yet.</Text>
 <Image
           style={styles.timeImg2} resizeMode='contain'
           source={require('../assets/no-tasks.png')}
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection:'column',
        paddingBottom:50,
-    
+    flex:1,
     
        display:'flex'
     },

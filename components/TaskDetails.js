@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text,StyleSheet,StatusBar,TouchableOpacity ,FlatList,Dimensions,ScrollView} from 'react-native';
 import { Icon, SearchBar, TabBar } from '@ant-design/react-native';
 import Database from '../Database';
+import Taskdesc from './taskDesc';
 
 const db = new Database();
 const {height,width} = Dimensions.get('window');
@@ -21,7 +22,11 @@ export default class TaskDetails extends Component {
   }
 
   componentDidMount(){
-    this.tasks();
+      this.tasks();
+    this._subscribe = this.props.navigation.addListener('didFocus', () => {
+        this.tasks();
+    });
+  
   }
 
   tasks() {
@@ -52,6 +57,9 @@ export default class TaskDetails extends Component {
 
           </View>
           <View style={styles.middleContainer}>
+
+<View style={styles.detailsBottom}>
+<ScrollView contentContainerStyle={{paddingBottom: '33%', flexDirection: 'row',flexWrap: 'wrap',}}>
 <View style={styles.detailsTop}>
 <View style={styles.topLeft}>
 <Text style={styles.detailsmonth}>
@@ -65,19 +73,12 @@ export default class TaskDetails extends Component {
 <Text style={styles.topRighttxt}>Today you have <Text style={{fontWeight:'bold',color:'#000'}}>{taskList.length}</Text> arrangements</Text>
 </View>
 </View>
-<View style={styles.detailsBottom}>
-<ScrollView horizontal contentContainerStyle={{width:'100%',height:'100%'}}>
-
-{/* <FlatList horizontal={true}  showsVerticalScrollIndicator={false} showsVerticalScrollIndicator={false}  contentContainerStyle={{width:'100%',flex:1,paddingLeft:'5%',}}
-        data={this.state.taskList}
-        renderItem={({ item ,index}) =>  */}
+ 
         {this.state.taskList && (this.state.taskList || []).map((item,index) => (
-       <View style={[styles.detailscard,{marginTop:index%2 === 0 ? 0 : 80,flex:1}]}>
-        <Text style={styles.time}>{item.taskTime}</Text>
-        <Text style={styles.taskName}>{item.taskName}</Text>
-        </View>  
+   
+           
+        <Taskdesc item={item} index={index} key={Math.random()}/>
         ))}
-  
 
 </ScrollView>
 
@@ -88,7 +89,6 @@ export default class TaskDetails extends Component {
 <Icon name="plus" color="#194DCB" size='lg' />
 </TouchableOpacity>
           </View>
-        <Text> TaskDetails </Text>
       </View>
     );
   }
@@ -96,7 +96,7 @@ export default class TaskDetails extends Component {
 
 const styles = StyleSheet.create({
     mainContainer:{
-        width:'100%',
+        // width:'100%',
         flex:1,
         height:'100%',
         backgroundColor:'#194DCB'
@@ -111,8 +111,9 @@ const styles = StyleSheet.create({
         alignContent:'center',
     },
     middleContainer:{
-        width:'100%',
-        height:'100%',
+        // width:'100%',
+        flex:1,
+        // height:'100%',
         backgroundColor:'#fff',
         borderTopLeftRadius:100
     },
@@ -185,37 +186,19 @@ marginTop:'15%'
     },
     detailsBottom:{
 width:'100%',
-
+flex:1,
+height:'100%'
     },
-    detailscard:{
-      width:150,
-      minWidth:150,
-      backgroundColor:'#194DCB',
-      borderRadius:15,
-      marginLeft:'2.5%',
-      marginRight: '2.5%',
-      paddingRight: '2%',
-      paddingTop: '10%',
-      paddingLeft: '7%',
-      paddingBottom: '10%',
-      minHeight:'40%',
-      marginBottom: '10%',
-      height:'75%',
-      minHeight:200
-    },
-    time:{
-      color:'#fff',
-      fontWeight:"bold",
-      fontSize:25
-    },
-    taskName:{
-     color:'#fff',
-     fontSize:22 ,
-     marginTop:'16%'
-    },
+   
+    
     location:{
       color:'#fff',
       marginTop:'10%'
+    },
+    detailsWrapper:{
+      display:'flex',
+      flexDirection:'row',
+      flexWrap: 'wrap',
     }
        
     

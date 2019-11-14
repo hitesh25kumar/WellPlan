@@ -112,12 +112,13 @@ addTask = () => {
 );
 }
 
-saveProduct() {
+saveProduct = () => {
   const { date, dailyReminder } = this.state;
   this.setState({
     isLoading: false,
   });
-
+  const hour = date.getHours();
+  const min = date.getMinutes();
 //schedule tasks
  PushNotification.localNotificationSchedule({
       //... You can use all the options from localNotifications
@@ -127,17 +128,19 @@ saveProduct() {
     playSound: true,
     soundName: 'my_sound.mp3',
       title: this.state.taskName,
-      message: date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }), // (required)
+      message: `${hour > 12 ? hour - 12 : hour}:${min} ${hour >= 12 ? 'PM' : 'AM'}`, // (required)
       date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), 0, 0)// in 60 secs  09-11-2019 08:00  current-date
     });
+ 
 
+ 
   const data = {
      taskId: date.getTime(),
     taskName: this.state.taskName,
      taskDate:date.getDate(),
      taskMonth:date.getMonth() + 1,
      taskYear:date.getFullYear(),
-     taskTime:date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+     taskTime: `${hour > 12 ? hour - 12 : hour}:${min} ${hour >= 12 ? 'PM' : 'AM'}`,
      taskHour:date.getHours(),
      taskMin:date.getMinutes(),
      taskDesc: this.state.taskDesc,
@@ -168,7 +171,10 @@ saveProduct() {
     let lastmonth = date.getMonth() + 1;
 const lastyear = date.getFullYear();
 const hour = date.getHours();
+console.log('hour: ', hour > 12 ? hour - 12 : hour);
+console.log('hour: ', hour >= 12 ? 'PM' : 'AM');
 const min = date.getMinutes();
+console.log('min: ', min > 9 ? min : `0${min}`);
 const time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
     console.log('lastday: ', lastday,lastmonth,lastyear,time);
     let mydate = JSON.stringify(this.state.date)
@@ -228,7 +234,7 @@ console.log('mydate: ', mydate);
             {timeSelected === false ?
            <Text style={{color:'#000'}}>Select Time</Text>
          :
-           <Text style={styles.dateTxt}>{time}</Text>
+           <Text style={styles.dateTxt}>{date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</Text>
          }
          </View>
           <Button style={styles.dateBtn2} onPress={this.timepicker}><Text style={{color:'#fff',fontSize:15,width:'100%'}}>Select Time</Text></Button>
