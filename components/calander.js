@@ -305,7 +305,7 @@ calTitle:{
   paddingBottom:'5%',
   },
   back:{
-    fontSize:25,
+    fontSize:22,
     padding:'1%',
     marginRight:'3%',
     borderRadius:20,

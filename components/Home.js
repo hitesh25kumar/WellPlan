@@ -70,7 +70,7 @@ const y = date.getFullYear();
 <View style={styles.topContainer}>
     <Text style={styles.TopTitle}>My Day</Text>
     
-    <Icon name="calendar" size="md" color="#194DCB" style={{marginTop: 10}} onPress={() => this.props.navigation.navigate('calander')}/>
+    <Icon name="calendar" size="lg" color="#194DCB" style={{marginTop: 10}} onPress={() => this.props.navigation.navigate('calander')}/>
 </View>
 <View style={styles.mainContainerInner} 
       >
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
         paddingLeft:'5%'
     },
     topContainer:{
-        paddingLeft: '5%',
-        
+        padding: '5%',
+        minHeight:80,
         
         display:'flex',
         flexDirection:'row',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     display:'flex',
     alignItems:'center',
     justifyContent:'center',
-    padding: '10%',
+    padding: '5%',
     },
     timeImg2:{
       width:width/1.1,

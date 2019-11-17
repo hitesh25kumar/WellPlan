@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text,StyleSheet,StatusBar,KeyboardAvoidingView,Image } from 'react-native';
-import { Button, InputItem ,Checkbox,} from '@ant-design/react-native';
+import { Button, InputItem ,Checkbox} from '@ant-design/react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 var PushNotification = require("react-native-push-notification");
 import {  Icon } from '@ant-design/react-native';
 import {firebaseApp} from './firebase';
@@ -27,7 +26,7 @@ export default class Add extends Component {
       show: false,
       timeSelected:false,
       dateSelected:false,
-
+      attempted:false,
       prodId: '',
       prodName: '',
       prodDesc: '',
@@ -71,6 +70,7 @@ export default class Add extends Component {
   }
   next = () => {
     console.log('next');
+    this.setState({attempted:true})
     if(this.state.taskName === ''){
 this.setState({errmsg:'Please give a name to your task',error:true})
     }
@@ -166,7 +166,7 @@ saveProduct = () => {
 
   render() {
     console.log(this.state);
-    const { show, date, mode,dateSelected,timeSelected } = this.state;
+    const { show, date, mode,dateSelected,timeSelected,attempted } = this.state;
     const lastday = date.getDate();
     let lastmonth = date.getMonth() + 1;
 const lastyear = date.getFullYear();
@@ -199,7 +199,7 @@ console.log('mydate: ', mydate);
          <View style={styles.inputWrapper}>
          <Text style={styles.inputLabel}>Task Name</Text>
        <InputItem style={styles.input}
-            error={this.state.taskName === ''}
+            error={this.state.taskName === '' && attempted === true}
             value={this.state.taskName}
             onChange={value => {
               this.setState({
@@ -209,6 +209,7 @@ console.log('mydate: ', mydate);
             placeholder="Task name"
           >
           </InputItem>
+
          </View>
          {this.state.taskName === '' && this.state.errmsg !== '' && <Text style={{color:'red',paddingLeft: '5%'}}>{this.state.errmsg}</Text>}
          <View style={styles.inputWrapper}>

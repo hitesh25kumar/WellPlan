@@ -51,7 +51,7 @@ export default class TaskDetails extends Component {
       console.log(this.props,this.state,'task details');
     return (
       <View style={styles.mainContainer}>
-           <StatusBar backgroundColor="#194DCB" barStyle='dark-content' />
+           <StatusBar backgroundColor="#194DCB" barStyle='light-content' />
 
           <View style={styles.topContainer}>
 
